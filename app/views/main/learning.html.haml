@@ -1,0 +1,9 @@
+.cards-container
+	- if @cards.any?
+		- @cards.each do | card |
+			.card{ :data => { :id => card.id } }
+				.side= card[:front_side]
+				.side.back= card[:back_side]
+	- else
+		.card
+			.side That is all!

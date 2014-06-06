@@ -1,0 +1,23 @@
+!!! 5
+%html
+	%head
+		%title SuperMemo
+		= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+		= csrf_meta_tags
+	%body
+		.container
+			.header
+				.brand SuperMemo
+				%nav
+					= nav_link("Learning (#{@card_count})", learning_path)
+					= nav_link('Add card', add_path)
+					= nav_link('Statistics', statistics_path)
+
+			.main
+				= yield
+
+			- if @debug.any?
+				%hr
+				%pre= debug @debug
+
+		= javascript_include_tag 'application', 'data-turbolinks-track' => true

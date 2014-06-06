@@ -1,0 +1,5 @@
+= form_for @card, url: add_path do |f|
+	.cards-form-container
+		= f.text_area :front_side, { placeholder: 'Front side' }
+		= f.text_area :back_side, { placeholder: 'Back side' }
+		= f.submit 'Добавить'

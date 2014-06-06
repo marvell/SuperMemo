@@ -1,0 +1,13 @@
+.statistics_page
+	%table
+		%tbody
+			%tr
+				%td Карточек всего
+				%td= @all
+
+			- @hits.each_with_index do |c, i|
+				- if i > 0
+					- i = i - 1
+					%tr
+						%td= "Карточек с #{i} повтором"
+						%td= c
