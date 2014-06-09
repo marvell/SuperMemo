@@ -1,0 +1,8 @@
+default: production
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username:
+  password:
+  database:
+  socket: /var/run/mysqld/mysqld.sock
