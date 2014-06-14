@@ -1,1 +1,1 @@
-role :app, %w{deploy@192.168.33.11}
+role :app, %w{marvell@ndr.su}
