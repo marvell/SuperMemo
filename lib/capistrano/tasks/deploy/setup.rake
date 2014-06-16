@@ -1,9 +1,9 @@
 namespace :deploy do
   task :setup do
     invoke 'deploy:setup:base'
-    # invoke 'deploy:setup:nginx'
+    invoke 'deploy:setup:nginx'
     invoke 'deploy:setup:unicorn'
-    # invoke 'deploy:setup:db'
+    invoke 'deploy:setup:db'
   end
 
   namespace :setup do

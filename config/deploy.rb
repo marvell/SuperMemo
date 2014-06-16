@@ -23,7 +23,7 @@ set :template_dir, 'config/deploy/templates'
 # set :pty, true
 
 set :linked_files, %w{config/database.yml config/unicorn.rb}
-set :linked_dirs, %w{tmp/pids tmp/cache tmp/sockets log}
+set :linked_dirs, %w{bin tmp/pids tmp/cache tmp/sockets log}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
