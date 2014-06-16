@@ -1,8 +1,8 @@
 <%= fetch(:stage) %>:
-	adapter: mysql2
-	encoding: utf8
-	pool: 5
-	username: <%= fetch(:db_user) %>
-	password: <%= fetch(:db_password) %>
-	database: <%= fetch(:db_name) %>
-	socket: /var/run/mysqld/mysqld.sock
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: <%= fetch(:db_user) %>
+  password: <%= fetch(:db_password) %>
+  database: <%= fetch(:db_name) %>
+  socket: /var/run/mysqld/mysqld.sock
