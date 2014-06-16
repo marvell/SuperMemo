@@ -1,4 +1,4 @@
-production:
+development:
   adapter: mysql2
   encoding: utf8
   pool: 5

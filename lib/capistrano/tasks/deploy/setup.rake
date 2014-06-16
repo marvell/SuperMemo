@@ -1,32 +1,63 @@
 namespace :deploy do
-  desc 'Setup config files.'
   task :setup do
-    on roles :all do
-      execute :mkdir, "-p #{shared_path}/config"
-      full_app_name = fetch(:full_app_name)
+    invoke 'deploy:setup:base'
+    # invoke 'deploy:setup:nginx'
+    invoke 'deploy:setup:unicorn'
+    # invoke 'deploy:setup:db'
+  end
 
-      # config files to be uploaded to shared/config, see the
-      # definition of smart_template for details of operation.
-      # Essentially looks for #{filename}.erb in deploy/#{full_app_name}/
-      # and if it isn't there, falls back to deploy/#{shared}. Generally
-      # everything should be in deploy/shared with params which differ
-      # set in the stage files
-      config_files = fetch(:config_files)
-      config_files.each do |file|
-        smart_template file
+  namespace :setup do
+    task :base do
+      on release_roles :all do
+        execute :mkdir, "-p #{shared_path}/config" unless test "[ -d #{shared_path}/config ]"
       end
+    end
 
-      # which of the above files should be marked as executable
-      executable_files = fetch(:executable_config_files)
-      executable_files.each do |file|
-        execute :chmod, "+x #{shared_path}/config/#{file}"
+    task :nginx do
+      on release_roles :all do
+        location = fetch(:template_dir, 'config/deploy/templates') + '/nginx_vhost.conf.erb'
+        unless File.file?(location)
+          error 'nginx_vhost.conf.erb file isn\'t found'
+          exit 1
+        end
+        config = ERB.new(File.read(location))
+
+        upload! StringIO.new(config.result), "#{shared_path}/config/nginx_vhost.conf"
+
+        sudo :ln, '-nfs', "#{shared_path}/config/nginx_vhost.conf", "/etc/nginx/sites-enabled/#{fetch(:application_domain)}"
+
+        invoke 'deploy:nginx:restart'
       end
+    end
 
-      # symlink stuff which should be... symlinked
-      symlinks = fetch(:symlinks)
+    task :unicorn do
+      on release_roles :all do
+        location = fetch(:template_dir, 'config/deploy/templates') + '/unicorn.rb.erb'
+        unless File.file?(location)
+          error 'unicorn.rb.erb file isn\'t found'
+          exit 1
+        end
+        config = ERB.new(File.read(location))
 
-      symlinks.each do |symlink|
-        sudo "ln -nfs #{shared_path}/config/#{symlink[:source]} #{sub_strings(symlink[:link])}"
+        upload! StringIO.new(config.result), "#{shared_path}/config/unicorn.rb"
+
+        # sudo :unicorn_rails, :restart
+      end
+    end
+
+    task :db do
+      on release_roles :all do
+        set :db_password, ask('database password', 'secure_password')
+
+        location = fetch(:template_dir, 'config/deploy/templates') + '/database.yml.erb'
+        unless File.file?(location)
+          error 'database.yml.erb file isn\'t found'
+          exit 1
+        end
+        config = ERB.new(File.read(location))
+
+        execute :mkdir, "-p #{shared_path}/db" unless test "[ -d #{shared_path}/db ]"
+        upload! StringIO.new(config.result), "#{shared_path}/config/database.yml"
       end
     end
   end

@@ -1,12 +1,12 @@
 upstream unicorn {
-  server unix:<%= fetch(:deploy_to) %>/current/tmp/unicorn.sock fail_timeout=0;
+  server unix:<%= current_path %>/tmp/sockets/unicorn.sock fail_timeout=0;
 }
 
 server {
   server_name <%= fetch(:application_domain) %>;
   listen 80;
 
-  root <%= fetch(:deploy_to) %>/current/public;
+  root <%= current_path %>/public;
 
   location ^~ /assets/ {
     gzip_static on;
